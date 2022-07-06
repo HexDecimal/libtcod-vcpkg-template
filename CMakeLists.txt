@@ -17,6 +17,7 @@ file(
     GLOB_RECURSE SOURCE_FILES
     CONFIGURE_DEPENDS  # Automatically reconfigure if source files are added/removed.
     ${PROJECT_SOURCE_DIR}/src/*.cpp
+    ${PROJECT_SOURCE_DIR}/src/*.hpp
 )
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
