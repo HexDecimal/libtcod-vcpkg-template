@@ -47,8 +47,12 @@ if (EMSCRIPTEN)
     )
 endif()
 
-set(BUILD_SHARED_LIBS ${WIN32})  # Builds libtcod has a shared library.
-add_subdirectory("libtcod")  # This will error if you haven't initialized libtcod the submodule!
-
 find_package(SDL2 CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2::SDL2main libtcod::libtcod)
+find_package(libtcod CONFIG REQUIRED)
+target_link_libraries(
+    ${PROJECT_NAME}
+    PRIVATE
+        SDL2::SDL2
+        SDL2::SDL2main
+        libtcod::libtcod
+)

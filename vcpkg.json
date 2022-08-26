@@ -3,23 +3,14 @@
   "name": "libtcod-template",
   "version-semver": "0.0.0",
   "dependencies": [
-    "glad",
-    "lodepng-c",
-    "sdl2",
     {
-      "name": "sdl2",
-      "default-features": false,
+      "name": "libtcod",
       "features": [
-        "x11"
-      ],
-      "platform": "linux"
+        "png",
+        "sdl",
+        "zlib"
+      ]
     },
-    "stb",
-    "utf8proc",
-    {
-      "name": "vcpkg-cmake",
-      "host": true
-    },
-    "zlib"
+    "sdl2"
   ]
 }
