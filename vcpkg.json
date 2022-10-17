@@ -5,9 +5,11 @@
   "dependencies": [
     {
       "name": "libtcod",
+      "default-features": true,
       "features": [
         "png",
         "sdl",
+        "unicode",
         "zlib"
       ]
     },
