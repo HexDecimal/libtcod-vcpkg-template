@@ -23,7 +23,7 @@ To permanently publish these builds you can push an annotated tag named after th
 
 * Make sure you have the correct tools ready.
   * For example on Windows:
-    Make sure you install the C++ compiler tools from [Visual Studio Community](https://visualstudio.microsoft.com/vs/community/),
+    Make sure you install the "Desktop development with C++" workload from the latest [Visual Studio Community Installer](https://visualstudio.microsoft.com/vs/community/),
     install the latest [CMake](https://cmake.org/download/),
     and install [Visual Studio Code](https://code.visualstudio.com/download).
 * [Create a new repository from ths template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/creating-a-repository-from-a-template#creating-a-repository-from-a-template).  **You do not use the GitHub fork button unless you're contributing.**
