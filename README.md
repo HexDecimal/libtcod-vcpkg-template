@@ -29,7 +29,7 @@ To permanently publish these builds you can push an annotated tag named after th
 * [Create a new repository from ths template](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/creating-a-repository-from-a-template#creating-a-repository-from-a-template).  **You do not use the GitHub fork button unless you're contributing.**
 * [Clone your new repository](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository).
 * Make sure to initialize the `vcpkg` [submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules).  If the `vcpkg` folder is empty or missing then the build process will fail.
-  * The command to do this is: `git submodule update --init --recursive`
+  * The command to do this is: `git submodule update --init`
 * Load this project in VS Code and install any recommended plugins.
   Most importantly: *C/C++*, *C++ Intellisense*, and *CMake Tools*.
 * Using the CMake Tools plugin you can now build and run this project.  Dependencies will automatically be installed via Vcpkg.
