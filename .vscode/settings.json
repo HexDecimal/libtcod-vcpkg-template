@@ -2,6 +2,9 @@
   "C_Cpp.vcpkg.enabled": true,
   "cmake.sourceDirectory": "${workspaceFolder}",
   "editor.formatOnSave": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
   "editor.defaultFormatter": "xaver.clang-format",
   "editor.rulers": [
     120

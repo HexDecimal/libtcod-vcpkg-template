@@ -38,6 +38,12 @@ To permanently publish these builds you can push an annotated tag named after th
 * The project will now build and run with F5.
   You should edit the `CMakeLists.txt` script as needed to expand your project.
 
+Before you make any changes or commits you should enable this repositories [pre-commit](https://pre-commit.com/) hooks:
+
+* [Download and install the latest version of Python](https://www.python.org/downloads/)
+* Install pre-commit with the command: `pip install pre-commit`
+* Enable the pre-commit hooks by running the command `pre-commit install` in the project directory.
+
 Now that you know the template works you'll want to take care the following:
 
 * Replace the license in [LICENSE.txt](LICENSE.txt) with your own, see [choosealicense.com](https://choosealicense.com/).
