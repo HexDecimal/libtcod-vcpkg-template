@@ -35,17 +35,18 @@ jobs:
     env:
       # Indicates the CMake build directory where project files and binaries are being produced.
       CMAKE_BUILD_DIR: ${{ github.workspace }}/build
+      archive-name:
 
     steps:
       # fetch-depth=0 and v1 are needed for 'git describe' to work correctly.
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true
       # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
       - name: Restore vcpkg and its artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           # The first path is where vcpkg generates artifacts while consuming the vcpkg.json manifest file.
           # The second path is the location of vcpkg (it contains the vcpkg executable and data files).
@@ -77,7 +78,7 @@ jobs:
       # Sets env.archive-name, which is used to name the distribution folder and archive.
       - name: Set archive name
         run: |
-          ARCHIVE_NAME=${{ env.project-name }}-`git describe --always`-${{ matrix.platform-name }}
+          ARCHIVE_NAME=${{ env.project-name }}-`git describe --tags --always`-${{ matrix.platform-name }}
           echo "Archive name set to: $ARCHIVE_NAME"
           echo "archive-name=$ARCHIVE_NAME" >> $GITHUB_ENV
       # Copy files from the CMake build and data directory into a new distribution folder.
@@ -101,12 +102,13 @@ jobs:
           Compress-Archive dist/*/ ${{ env.archive-name }}.zip
       # Upload archives as artifacts, these can be downloaded from the GitHub Actions page.
       - name: "Upload Artifact"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: automated-builds
+          name: automated-builds-${{ matrix.triplet}}
           path: ${{ env.archive-name }}.*
           retention-days: 7
           if-no-files-found: error
+          compression-level: 0
       # If a tag is pushed then a new archives are uploaded to GitHub Releases automatically.
       - name: Upload release
         if: startsWith(github.ref, 'refs/tags/')
@@ -121,14 +123,14 @@ jobs:
   emscripten:
     runs-on: ubuntu-latest
     env:
-      EM_VERSION: 3.1.9
+      EM_VERSION: 3.1.64
       EM_CACHE_FOLDER: "emsdk-cache"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - name: Restore vcpkg and its artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             build/vcpkg_installed/
@@ -139,11 +141,11 @@ jobs:
           key: wasm32-emscripten-${{ hashFiles('vcpkg.json', '.git/modules/vcpkg/HEAD') }}
       - name: Setup cache
         id: cache-system-libraries
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{env.EM_CACHE_FOLDER}}
           key: ${{env.EM_VERSION}}-${{ runner.os }}
-      - uses: mymindstorm/setup-emsdk@v11
+      - uses: mymindstorm/setup-emsdk@v14
         with:
           version: ${{env.EM_VERSION}}
           actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
@@ -160,9 +162,10 @@ jobs:
         run: cmake --build build
       - name: Show contents of the build directory
         run: find build
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: emscripten-builds
           path: build/bin
           retention-days: 7
           if-no-files-found: error
+          compression-level: 6
