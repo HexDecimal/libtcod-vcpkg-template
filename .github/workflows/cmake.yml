@@ -28,13 +28,13 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - os: windows-2019
+          - os: windows-2022
             triplet: x64-windows
             platform-name: windows.x64
-          - os: macos-12
-            triplet: x64-osx
-            platform-name: macos.x64
-          - os: ubuntu-20.04
+          - os: macos-14
+            triplet: arm64-osx
+            platform-name: macos.arm64
+          - os: ubuntu-22.04
             triplet: x64-linux
             platform-name: linux.x64
 
@@ -127,7 +127,7 @@ jobs:
           overwrite: true
 
   emscripten:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       EM_VERSION: 3.1.64
       EM_CACHE_FOLDER: "emsdk-cache"
