@@ -133,7 +133,7 @@ jobs:
   emscripten:
     runs-on: ubuntu-24.04
     env:
-      EM_VERSION: 3.1.64
+      EM_VERSION: 4.0.5
       EM_CACHE_FOLDER: "emsdk-cache"
     steps:
       - uses: actions/checkout@v4
