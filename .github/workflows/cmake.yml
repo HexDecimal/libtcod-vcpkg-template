@@ -37,6 +37,7 @@ jobs:
           - os: ubuntu-24.04
             triplet: x64-linux
             platform-name: linux.x64
+            apt-packages: libltdl-dev # libltdl-dev needed to build libxcrypt sub-dependency
 
     env:
       # Indicates the CMake build directory where project files and binaries are being produced.
@@ -51,6 +52,9 @@ jobs:
           submodules: true
       # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
+      - name: Install APT packages
+        if: matrix.apt-packages
+        run: sudo apt-get install ${{ matrix.apt-packages }}
       - name: Restore vcpkg and its artifacts
         uses: actions/cache@v4
         with:
