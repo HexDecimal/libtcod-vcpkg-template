@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.13...3.21)
+cmake_minimum_required (VERSION 3.19...4.0)
 
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE
@@ -47,12 +47,11 @@ if (EMSCRIPTEN)
     )
 endif()
 
-find_package(SDL2 CONFIG REQUIRED)
+find_package(SDL3 CONFIG REQUIRED)
 find_package(libtcod CONFIG REQUIRED)
 target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
-        SDL2::SDL2
-        SDL2::SDL2main
+        SDL3::SDL3
         libtcod::libtcod
 )
