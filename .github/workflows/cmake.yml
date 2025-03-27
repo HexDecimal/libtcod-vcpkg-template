@@ -10,7 +10,7 @@ defaults:
 
 env:
   project-name: libtcod-vcpkg-template
-  # Build mode for CMake, such as "Release" or "Debug".
+  # Build mode for CMake, such as "Release", "Debug", "RelWithDebInfo", or "MinSizeRel"
   BUILD_TYPE: Release
   # Indicates the location of the vcpkg as a Git submodule of the project repository.
   VCPKG_ROOT: ${{ github.workspace }}/vcpkg
@@ -44,6 +44,9 @@ jobs:
       # Indicates the CMake build directory where project files and binaries are being produced.
       CMAKE_BUILD_DIR: ${{ github.workspace }}/build
       archive-name:
+
+    permissions:
+      contents: write  # for svenstaro/upload-release-action
 
     steps:
       # fetch-depth=0 and v1 are needed for 'git describe' to work correctly.
@@ -115,14 +118,14 @@ jobs:
       - name: "Upload Artifact"
         uses: actions/upload-artifact@v4
         with:
-          name: automated-builds-${{ matrix.triplet}}
+          name: cmake-${{ matrix.triplet }}
           path: ${{ env.archive-name }}.*
           retention-days: 7
           if-no-files-found: error
           compression-level: 0
       # If a tag is pushed then a new archives are uploaded to GitHub Releases automatically.
       - name: Upload release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: github.ref_type == 'tag'
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -168,14 +171,14 @@ jobs:
           -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE="${EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake"
           -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
           -DVCPKG_TARGET_TRIPLET=wasm32-emscripten
-          -DCMAKE_BUILD_TYPE="${{ env.BUILD_TYPE }}"
+          -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
       - name: Build
         run: cmake --build build
       - name: Show contents of the build directory
         run: find build
       - uses: actions/upload-artifact@v4
         with:
-          name: emscripten-builds
+          name: emscripten-${{ env.BUILD_TYPE }}
           path: build/bin
           retention-days: 7
           if-no-files-found: error
