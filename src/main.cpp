@@ -7,10 +7,6 @@
 #include <iostream>
 #include <libtcod.hpp>
 
-#if defined(_MSC_VER)
-#pragma warning(disable : 4297)  // Allow "throw" in main().  Letting the compiler handle termination.
-#endif
-
 /// Return the data directory.
 auto get_data_dir() -> std::filesystem::path {
   static auto root_directory = std::filesystem::path{"."};  // Begin at the working directory.
