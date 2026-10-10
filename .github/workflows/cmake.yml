@@ -19,7 +19,7 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: pre-commit/action@v3.0.1
 
   build:
@@ -28,39 +28,42 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - os: windows-2022
+          - os: windows-2025
             triplet: x64-windows
             platform-name: windows.x64
-          - os: macos-14
+          - os: macos-26
             triplet: arm64-osx
             platform-name: macos.arm64
-          - os: ubuntu-24.04
+          - os: ubuntu-26.04
             triplet: x64-linux
             platform-name: linux.x64
-            # libltdl-dev needed to build libxcrypt sub-dependency, others needed for sdl3
-            apt-packages: libltdl-dev libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev
+            # needed to build libxcrypt and sdl3
+            apt-packages: autoconf autoconf-archive automake libtool libltdl-dev libx11-dev libxft-dev libxext-dev libwayland-dev libxkbcommon-dev libegl1-mesa-dev libibus-1.0-dev
 
     env:
       # Indicates the CMake build directory where project files and binaries are being produced.
       CMAKE_BUILD_DIR: ${{ github.workspace }}/build
-      archive-name:
+      archive-name: ""
 
     permissions:
-      contents: write  # for svenstaro/upload-release-action
+      contents: write # for svenstaro/upload-release-action
 
     steps:
       # fetch-depth=0 and v1 are needed for 'git describe' to work correctly.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: true
       # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
       - uses: lukka/get-cmake@latest
+      - name: Update APT packages
+        if: matrix.apt-packages
+        run: sudo apt-get update
       - name: Install APT packages
         if: matrix.apt-packages
         run: sudo apt-get install ${{ matrix.apt-packages }}
       - name: Restore vcpkg and its artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           # The first path is where vcpkg generates artifacts while consuming the vcpkg.json manifest file.
           # The second path is the location of vcpkg (it contains the vcpkg executable and data files).
@@ -116,7 +119,7 @@ jobs:
           Compress-Archive dist/*/ ${{ env.archive-name }}.zip
       # Upload archives as artifacts, these can be downloaded from the GitHub Actions page.
       - name: "Upload Artifact"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cmake-${{ matrix.triplet }}
           path: ${{ env.archive-name }}.*
@@ -135,16 +138,16 @@ jobs:
           overwrite: true
 
   emscripten:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     env:
       EM_VERSION: 4.0.5
       EM_CACHE_FOLDER: "emsdk-cache"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - name: Restore vcpkg and its artifacts
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             build/vcpkg_installed/
@@ -155,11 +158,11 @@ jobs:
           key: wasm32-emscripten-${{ hashFiles('vcpkg.json', '.git/modules/vcpkg/HEAD') }}
       - name: Setup cache
         id: cache-system-libraries
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{env.EM_CACHE_FOLDER}}
           key: ${{env.EM_VERSION}}-${{ runner.os }}
-      - uses: mymindstorm/setup-emsdk@v14
+      - uses: mymindstorm/setup-emsdk@v16
         with:
           version: ${{env.EM_VERSION}}
           actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
@@ -176,7 +179,7 @@ jobs:
         run: cmake --build build
       - name: Show contents of the build directory
         run: find build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: emscripten-${{ env.BUILD_TYPE }}
           path: build/bin
